@@ -19,7 +19,7 @@ func main() {
 
 	//Read configuration file
 	conf, err := config.Read("/config/default.json", logger)
-	if err != nil{
+	if err != nil {
 		//Log error and use default values returned
 		logger.Error(err)
 	}
@@ -34,7 +34,7 @@ func main() {
 	port := fmt.Sprintf(":%d", conf.Port)
 	routerErr := router.Run(port)
 	if routerErr != nil {
-		logger.Error("An error occurred when starting the router. <%v>", routerErr)
+		logger.Errorf("An error occurred when starting the router. <%v>", routerErr)
 	}
 
 }
