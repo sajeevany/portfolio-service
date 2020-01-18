@@ -7,11 +7,6 @@ import (
 	"os"
 )
 
-type Conf struct {
-	Version string `json:"version"`
-	Port    int    `json:"port"`
-}
-
 func (c Conf) getFields() logrus.Fields {
 	return logrus.Fields{"version": c.Version, "port": c.Port}
 }

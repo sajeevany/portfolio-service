@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sajeevany/DockerizedGolangTemplate/internal/config"
-	"github.com/sajeevany/DockerizedGolangTemplate/internal/endpoints"
-	"github.com/sajeevany/DockerizedGolangTemplate/internal/logging"
-	lm "github.com/sajeevany/DockerizedGolangTemplate/internal/logging/middleware"
+	"github.com/sajeevany/portfolioService/internal/config"
+	"github.com/sajeevany/portfolioService/internal/endpoints"
+	"github.com/sajeevany/portfolioService/internal/logging"
+	lm "github.com/sajeevany/portfolioService/internal/logging/middleware"
 	"github.com/sirupsen/logrus"
 )
 

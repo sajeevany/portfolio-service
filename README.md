@@ -1,2 +1,2 @@
-# DockerizedGolangTemplate
-Defines a template repo from which to write a golang service. Includes basic gin endpoint.
+# Portfolio Service
+Wrapper service for storing user portfolio information

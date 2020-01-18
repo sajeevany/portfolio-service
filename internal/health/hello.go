@@ -3,12 +3,12 @@ package health
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sajeevany/DockerizedGolangTemplate/internal/logging"
+	"github.com/sajeevany/portfolioService/internal/logging"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
-type Ping struct{
+type Ping struct {
 	Response string `json:"response" required:"true" description:"Server hello response" example:"hello"`
 }
 
