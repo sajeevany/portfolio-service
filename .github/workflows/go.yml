@@ -18,14 +18,8 @@ jobs:
 
     - name: Get dependencies
       run: |
-        go mod download
-        
-    - name: Run lint
-      uses: samuelmeuli/lint-action@v1
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN_LINTY }}
-        golint: true
-        gofmt: true
-        
+        go mod download |
+        go install golang.org/x/lint/golint
+
     - name: Build
       run: go build -v ./...
