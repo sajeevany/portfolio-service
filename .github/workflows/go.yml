@@ -18,7 +18,8 @@ jobs:
 
     - name: Get dependencies
       run: |
-        go mod download
+        go mod download |
+        go install golang.org/x/lint/golint
         
     - name: Run lint
       uses: samuelmeuli/lint-action@v1
