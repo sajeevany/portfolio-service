@@ -28,7 +28,7 @@ func main() {
 	router := setupRouter(logger)
 
 	//Setup routes
-	setupV1Routes(router)
+	setupV1Routes(router, logger)
 
 	//Use default route of 8080.
 	port := fmt.Sprintf(":%d", conf.Port)
@@ -45,21 +45,20 @@ func setupRouter(logger *logrus.Logger) *gin.Engine {
 	engine := gin.New()
 
 	//Add middleware
-	engine.Use(lm.SetCtxLogger(logger))
 	engine.Use(lm.LogRequest(logger))
 	engine.Use(gin.Recovery())
 
 	return engine
 }
 
-func setupV1Routes(rtr *gin.Engine) {
-	addHealthEndpoints(rtr)
+func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger) {
+	addHealthEndpoints(rtr, logger)
 }
 
-func addHealthEndpoints(rtr *gin.Engine) {
+func addHealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.HealthGroup))
 	{
-		hello := endpoints.BuildHelloEndpoint()
+		hello := endpoints.BuildHelloEndpoint(logger)
 		v1.GET(hello.URL, hello.Handlers...)
 	}
 }
