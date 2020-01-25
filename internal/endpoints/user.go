@@ -3,31 +3,34 @@ package endpoints
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolioService/internal/users"
+	"github.com/sirupsen/logrus"
 )
 
 const UserGroup = "/user"
-const User = "/"
+const GetUsers = "/"
+const GetUser = "/:id"
+const PostUser = "/:id"
 
 //BuildGetUsersEndpoint -Builds get all users endpoint
-func BuildGetUsersEndpoint(handlers ...gin.HandlerFunc) Endpoint {
+func BuildGetUsersEndpoint(logger *logrus.Logger, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
-		URL:      User,
-		Handlers: append(handlers, users.GetAllUsers),
+		URL:      GetUsers,
+		Handlers: append(handlers, users.GetAllUsers(logger)),
 	}
 }
 
 //BuildGetUserEndpoint - Build get user endpoint. Gets user based on ID
-func BuildGetUserEndpoint(handlers ...gin.HandlerFunc) Endpoint {
+func BuildGetUserEndpoint(logger *logrus.Logger, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
-		URL:      User,
-		Handlers: append(handlers, users.GetUser),
+		URL:      GetUser,
+		Handlers: append(handlers, users.GetUser(logger)),
 	}
 }
 
 //BuildAddUserEndpoint - Build add user endpoint. Adds a new user to the database
-func BuildAddUserEndpoint(handlers ...gin.HandlerFunc) Endpoint {
+func BuildAddUserEndpoint(logger *logrus.Logger, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
-		URL:      User,
-		Handlers: append(handlers, users.AddUser),
+		URL:      PostUser,
+		Handlers: append(handlers, users.AddUser(logger)),
 	}
 }

@@ -10,6 +10,7 @@ type Ping struct {
 	Response string `json:"response" required:"true" description:"Server hello response" example:"hello"`
 }
 
+//Hello - sanity endpoint to validate if the service is up
 func Hello(logger *logrus.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		logger.Println("Hello from within hello")

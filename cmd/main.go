@@ -53,6 +53,7 @@ func setupRouter(logger *logrus.Logger) *gin.Engine {
 
 func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger) {
 	addHealthEndpoints(rtr, logger)
+	addUserEndpoints(rtr, logger)
 }
 
 func addHealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
@@ -60,5 +61,22 @@ func addHealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	{
 		hello := endpoints.BuildHelloEndpoint(logger)
 		v1.GET(hello.URL, hello.Handlers...)
+	}
+}
+
+func addUserEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
+	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.UserGroup))
+	{
+		//GET user. Requires id.
+		getUser := endpoints.BuildGetUserEndpoint(logger)
+		v1.GET(getUser.URL, getUser.Handlers...)
+
+		//GET all users
+		getAllUsers := endpoints.BuildGetUsersEndpoint(logger)
+		v1.GET(getAllUsers.URL, getAllUsers.Handlers...)
+
+		//POST user
+		postUser := endpoints.BuildAddUserEndpoint(logger)
+		v1.POST(postUser.URL, postUser.Handlers...)
 	}
 }
