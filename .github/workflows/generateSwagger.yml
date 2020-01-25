@@ -26,7 +26,7 @@ jobs:
         go install github.com/swaggo/swag/cmd/swag
 
     - name: Generate
-      run: swag init cmd/main.go -g cmd/main.go -d ./
+      run: /go/bin/swag init cmd/main.go -g cmd/main.go -d ./
     
     - name: Commit and merge swag docs
       uses: seanmiddleditch/gha-publish-to-git@master
