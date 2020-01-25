@@ -1,4 +1,4 @@
-module github.com/sajeevany/portfolioService
+module github.com/sajeevany/portfolio-service
 
 go 1.13
 
