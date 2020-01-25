@@ -1,0 +1,23 @@
+version: '3.1'
+services:
+  portfolio-service:
+    image: sajeevany/portfolio-service:latest
+    ports:
+      - "80:8080"
+  cache:
+    image: "redis:alpine"
+    restart: always
+    ports:
+      - "90:6379"
+  nosql:
+    image: "aerospike:4.5.3.6"
+    restart: always
+    ports:
+      - "100:3000"
+      - "101:3001"
+      - "102:3002"
+  sql:
+    image: "postgres:alpine"
+    restart: always
+    ports:
+      - "110:5432"
