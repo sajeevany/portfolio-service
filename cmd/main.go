@@ -8,10 +8,19 @@ import (
 	"github.com/sajeevany/portfolio-service/internal/logging"
 	lm "github.com/sajeevany/portfolio-service/internal/logging/middleware"
 	"github.com/sirupsen/logrus"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+
+	_ "github.com/sajeevany/portfolio-service/docs"
 )
 
 const v1Api = "/api/v1"
 
+// @title Portfolio Service API
+// @version 1.0
+// @description Stores and fetches user and portfolio data
+// @license.name MIT License
+// @BasePath /api/v1
 func main() {
 
 	//Create a universal logger
@@ -29,6 +38,10 @@ func main() {
 
 	//Setup routes
 	setupV1Routes(router, logger)
+
+	//Add swagger route
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 
 	//Use default route of 8080.
 	port := fmt.Sprintf(":%d", conf.Port)
@@ -52,11 +65,11 @@ func setupRouter(logger *logrus.Logger) *gin.Engine {
 }
 
 func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger) {
-	addHealthEndpoints(rtr, logger)
-	addUserEndpoints(rtr, logger)
+	addV1HealthEndpoints(rtr, logger)
+	addV1UserEndpoints(rtr, logger)
 }
 
-func addHealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
+func addV1HealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.HealthGroup))
 	{
 		hello := endpoints.BuildHelloEndpoint(logger)
@@ -64,7 +77,7 @@ func addHealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	}
 }
 
-func addUserEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
+func addV1UserEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.UserGroup))
 	{
 		//GET user. Requires id.
