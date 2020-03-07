@@ -1,0 +1,11 @@
+{
+  "versionFile": "/app/version.txt",
+  "port": 8080,
+  "portfolioDS": {
+    "type": "aerospike",
+    "address": "localhost",
+    "port": 3000,
+    "password": "",
+    "dbName": ""
+  }
+}

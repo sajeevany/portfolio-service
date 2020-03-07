@@ -27,11 +27,12 @@ func main() {
 	logger := logging.Init()
 
 	//Read configuration file
-	conf, err := config.Read("/config/default.json", logger)
+	conf, err := config.Read("/app/config/portfolio-service-conf.json", logger)
 	if err != nil {
 		//Log error and use default values returned
 		logger.Error(err)
 	}
+	logger.WithFields(conf.GetFields()).Info("Service config loaded")
 
 	//Initialize router
 	router := setupRouter(logger)
@@ -41,7 +42,6 @@ func main() {
 
 	//Add swagger route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 
 	//Use default route of 8080.
 	port := fmt.Sprintf(":%d", conf.Port)
