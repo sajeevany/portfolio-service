@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 )
+
 //Read - reads config file referenced by conf
 func Read(conf string, logger *logrus.Logger) (Conf, error) {
 
@@ -35,7 +36,7 @@ func Read(conf string, logger *logrus.Logger) (Conf, error) {
 	} else if os.IsNotExist(err) {
 		//file doesn't exist
 		defaultConf := getDefaultConf()
-		logger.WithFields(defaultConf.GetFields()).Errorf("Configuration file <%v> does not exist. Using defaults.  Encountered error <%v>", conf, err)
+		logger.WithFields(defaultConf.GetFields()).Errorf("Configuration file <%v> does not exist. Using defaults. Encountered error <%v>", conf, err)
 		return defaultConf, err
 	} else {
 		//https://stackoverflow.com/questions/12518876/how-to-check-if-a-file-exists-in-go
@@ -48,6 +49,6 @@ func Read(conf string, logger *logrus.Logger) (Conf, error) {
 func getDefaultConf() Conf {
 	return Conf{
 		VersionFile: "/app/version.txt",
-		Port:    8080,
+		Port:        8080,
 	}
 }

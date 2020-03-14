@@ -16,6 +16,12 @@ import (
 
 const v1Api = "/api/v1"
 
+//Build injection variables
+var (
+	GIT_COMMIT  string
+	CONFIG_FILE string
+)
+
 // @title Portfolio Service API
 // @version 1.0
 // @description Stores and fetches user and portfolio data
@@ -26,13 +32,21 @@ func main() {
 	//Create a universal logger
 	logger := logging.Init()
 
+	//Log build values
+	msg := fmt.Sprintf("Git commit %v", GIT_COMMIT)
+	logger.Info(msg)
+
 	//Read configuration file
-	conf, err := config.Read("/app/config/portfolio-service-conf.json", logger)
+	conf, err := config.Read(CONFIG_FILE, logger)
 	if err != nil {
 		//Log error and use default values returned
 		logger.Error(err)
 	}
 	logger.WithFields(conf.GetFields()).Info("Service config loaded")
+
+	//Update logger with config args
+	logger.Debug("Updating services based on service configuration")
+	logging.Update(logger, conf.Logger)
 
 	//Initialize router
 	router := setupRouter(logger)

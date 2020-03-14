@@ -1,25 +1,20 @@
-version: '3.1'
+version: '3.6'
 services:
   portfolio-service:
+    command: /bin/sh -c "export GIT_COMMIT=$$(git rev-parse HEAD)"
     build:
       context: ./..
       dockerfile: build/Dockerfile
+      args:
+        CONFIG_FILE: "deploy/portfolio-service-conf.json"
+        GIT_COMMIT: $GIT_COMMIT
     ports:
       - "80:8080"
-  cache:
-    image: "redis:alpine"
-    restart: always
-    ports:
-      - "90:6379"
   nosql:
+    ulimits:
+      nofile: 90000
     image: "aerospike:4.5.3.6"
-    restart: always
     ports:
       - "100:3000"
       - "101:3001"
       - "102:3002"
-  sql:
-    image: "postgres:alpine"
-    restart: always
-    ports:
-      - "110:5432"
