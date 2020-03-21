@@ -2,7 +2,7 @@ package endpoints
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sajeevany/portfolio-service/internal/users"
+	"github.com/sajeevany/portfolio-service/internal/users/handlers"
 	"github.com/sirupsen/logrus"
 )
 

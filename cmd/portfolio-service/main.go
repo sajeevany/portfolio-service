@@ -24,7 +24,7 @@ var (
 
 // @title Portfolio Service API
 // @version 1.0
-// @description Stores and fetches user and portfolio data
+// @description Stores and fetches user and model data
 // @license.name MIT License
 // @BasePath /api/v1
 func main() {
@@ -47,6 +47,9 @@ func main() {
 	//Update logger with config args
 	logger.Debug("Updating services based on service configuration")
 	logging.Update(logger, conf.Logger)
+
+	//Create Aerospike client
+
 
 	//Initialize router
 	router := setupRouter(logger)
@@ -81,6 +84,7 @@ func setupRouter(logger *logrus.Logger) *gin.Engine {
 func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger) {
 	addV1HealthEndpoints(rtr, logger)
 	addV1UserEndpoints(rtr, logger)
+	addV1PortfolioEndpoints(rtr, logger)
 }
 
 func addV1HealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
@@ -105,5 +109,14 @@ func addV1UserEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 		//POST user
 		postUser := endpoints.BuildAddUserEndpoint(logger)
 		v1.POST(postUser.URL, postUser.Handlers...)
+	}
+}
+
+func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger){
+	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.PortfolioGroup))
+	{
+		//GET portfolios
+		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger)
+		v1.GET(getPortfolios.URL, getPortfolios.Handlers...)
 	}
 }

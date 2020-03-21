@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.6' PortfolioS
 services:
   portfolio-service:
     command: /bin/sh -c "export GIT_COMMIT=$$(git rev-parse HEAD)"
@@ -6,7 +6,7 @@ services:
       context: ./..
       dockerfile: build/Dockerfile
       args:
-        CONFIG_FILE: "deploy/portfolio-service-conf.json"
+        CONFIG_FILE: "deploy/model-service-conf.json"
         GIT_COMMIT: $GIT_COMMIT
     ports:
       - "80:8080"

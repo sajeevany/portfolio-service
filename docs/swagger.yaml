@@ -6,9 +6,57 @@ definitions:
         example: hello
         type: string
     type: object
+  model.AllPortfoliosViewModel:
+    properties:
+      Portfolios:
+        items:
+          $ref: '#/definitions/model.PortfolioViewModel'
+        type: array
+    type: object
+  model.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  model.MetadataViewModel:
+    properties:
+      createTime:
+        type: string
+      id:
+        type: string
+      lastUpdated:
+        type: string
+    type: object
+  model.PortfolioViewModel:
+    properties:
+      Metadata:
+        $ref: '#/definitions/model.MetadataViewModel'
+        type: object
+      stocks:
+        items:
+          $ref: '#/definitions/model.StockViewModel'
+        type: array
+    type: object
+  model.StockViewModel:
+    properties:
+      currency:
+        type: string
+      currentPrice:
+        type: number
+      name:
+        type: string
+      purchaseDate:
+        type: string
+      purchasePrice:
+        type: number
+      quantity:
+        type: integer
+      ticker:
+        type: string
+    type: object
 info:
   contact: {}
-  description: Stores and fetches user and portfolio data
+  description: Stores and fetches user and model data
   license:
     name: MIT License
   title: Portfolio Service API
@@ -28,4 +76,21 @@ paths:
       summary: Hello sanity endpoint
       tags:
       - health
+  /portfolio:
+    get:
+      description: Non-authenticated endpoint that returns array of all stored portfolios.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AllPortfoliosViewModel'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Get portfolios endpoint
+      tags:
+      - portfolio
 swagger: "2.0"

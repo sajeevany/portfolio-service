@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Stores and fetches user and portfolio data",
+        "description": "Stores and fetches user and model data",
         "title": "Portfolio Service API",
         "contact": {},
         "license": {
@@ -30,6 +30,32 @@
                     }
                 }
             }
+        },
+        "/portfolio": {
+            "get": {
+                "description": "Non-authenticated endpoint that returns array of all stored portfolios.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "portfolio"
+                ],
+                "summary": "Get portfolios endpoint",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AllPortfoliosViewModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -39,6 +65,80 @@
                 "response": {
                     "type": "string",
                     "example": "hello"
+                }
+            }
+        },
+        "model.AllPortfoliosViewModel": {
+            "type": "object",
+            "properties": {
+                "Portfolios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.PortfolioViewModel"
+                    }
+                }
+            }
+        },
+        "model.Error": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.MetadataViewModel": {
+            "type": "object",
+            "properties": {
+                "createTime": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "lastUpdated": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PortfolioViewModel": {
+            "type": "object",
+            "properties": {
+                "Metadata": {
+                    "type": "object",
+                    "$ref": "#/definitions/model.MetadataViewModel"
+                },
+                "stocks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockViewModel"
+                    }
+                }
+            }
+        },
+        "model.StockViewModel": {
+            "type": "object",
+            "properties": {
+                "currency": {
+                    "type": "string"
+                },
+                "currentPrice": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "purchaseDate": {
+                    "type": "string"
+                },
+                "purchasePrice": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                },
+                "ticker": {
+                    "type": "string"
                 }
             }
         }

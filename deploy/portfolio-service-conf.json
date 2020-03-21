@@ -3,7 +3,7 @@
   "port": 8080,
   "portfolioDS": {
     "type": "aerospike",
-    "address": "localhost",
+    "host": "localhost",
     "port": 3000,
     "password": "",
     "dbName": ""

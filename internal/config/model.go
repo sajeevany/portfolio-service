@@ -13,16 +13,17 @@ type Conf struct {
 
 func (c Conf) GetFields() logrus.Fields {
 	return logrus.Fields{
-		"version":             c.VersionFile,
-		"port":                c.Port,
-		"cache datastore":     c.Cache.GetFields(),
-		"portfolio datastore": c.PortfolioDS.GetFields(),
+		"version":         c.VersionFile,
+		"port":            c.Port,
+		"cache datastore": c.Cache.GetFields(),
+		"model datastore": c.PortfolioDS.GetFields(),
 	}
 }
 
 type DataStore struct {
 	Type     string `json:"type"`
-	Address  string `json:"address"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
 	Password string `json:"password"`
 	DbName   string `json:"dbName"`
 }
@@ -30,7 +31,8 @@ type DataStore struct {
 func (c DataStore) GetFields() logrus.Fields {
 	return logrus.Fields{
 		"type":     c.Type,
-		"address":  c.Address,
+		"host":     c.Host,
+		"port":     c.Port,
 		"password": "Redacted",
 		"dbName":   c.DbName,
 	}
@@ -40,7 +42,7 @@ type LoggingConf struct {
 	Level string `json:"level"`
 }
 
-func (c LoggingConf) GetFields() logrus.Fields{
+func (c LoggingConf) GetFields() logrus.Fields {
 	return logrus.Fields{
 		"level": c.Level,
 	}
