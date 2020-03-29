@@ -1,5 +1,7 @@
 package model
 
+import "github.com/sirupsen/logrus"
+
 //AllPortfoliosViewModel - view of all portfolios
 type AllPortfoliosViewModel struct {
 	Portfolios []PortfolioViewModel `json:"portfolios" required:"true" description:"List of all portfolios"`
@@ -17,8 +19,20 @@ type StockViewModel struct {
 	Quantity      int     `json:"quantity" required:"true" description:"Number of shares purchased" example:"100"`
 	PurchasePrice float64 `json:"purchasePrice" required:"true" description:"Price at time of purchase" example:"10000.00"`
 	CurrentPrice  float64 `json:"currentPrice" required:"true" description:"Latest available price per share" example:"105.00"`
-	PurchaseDate  string  `json:"purchase date" required:"true" description:"Date of purchase" example:"02/03/2020"`
+	PurchaseDate  string  `json:"purchaseDate" required:"true" description:"Date of purchase" example:"02/03/2020"`
 	Currency      string  `json:"currency" required:"true" description:"Purchase currency" example:"CAD"`
+}
+
+func (model StockViewModel) GetFields() logrus.Fields {
+	return logrus.Fields{
+		"ticker":        model.Ticker,
+		"name":          model.Name,
+		"quantity":      model.Quantity,
+		"purchasePrice": model.PurchasePrice,
+		"currentPrice":  model.CurrentPrice,
+		"purchaseDate":  model.PurchaseDate,
+		"currency":      model.Currency,
+	}
 }
 
 type MetadataViewModel struct {

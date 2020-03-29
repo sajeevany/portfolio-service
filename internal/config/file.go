@@ -48,7 +48,6 @@ func Read(conf string, logger *logrus.Logger) (Conf, error) {
 
 func getDefaultConf() Conf {
 	return Conf{
-		VersionFile: "/app/version.txt",
-		Port:        8080,
+		Port: 8080,
 	}
 }

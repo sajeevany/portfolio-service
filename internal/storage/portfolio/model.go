@@ -1,7 +1,7 @@
 package portfolio
 
-//PortfolioStorageModel - defines how data is to be stored in persistent storage
-type PortfolioStorageModel struct {
+//StorageModel - defines how data is to be stored in persistent storage
+type StorageModel struct {
 	MD        MetadataStorageModel `json:"MetadataStorageModel"`
 	Inventory InventoryModel       `json:Inventory`
 }

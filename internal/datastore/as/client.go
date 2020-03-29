@@ -1,4 +1,4 @@
-package aerospike
+package as
 
 import (
 	"fmt"
@@ -7,9 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func New(conf config.DataStore, logger *logrus.Logger)(*aerospike.Client, error){
+func New(conf config.AerospikePortfolioConfig, logger *logrus.Logger) (*aerospike.Client, error) {
 	client, err := aerospike.NewClient(conf.Host, conf.Port)
-	if err != nil{
+	if err != nil {
 		msg := fmt.Sprintf("Unexpected error when creating aerospike client, <%v> with config.", err)
 		logger.WithFields(conf.GetFields()).Error(msg)
 		return nil, err

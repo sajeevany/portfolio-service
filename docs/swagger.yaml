@@ -8,7 +8,7 @@ definitions:
     type: object
   model.AllPortfoliosViewModel:
     properties:
-      Portfolios:
+      portfolios:
         items:
           $ref: '#/definitions/model.PortfolioViewModel'
         type: array
@@ -21,15 +21,23 @@ definitions:
   model.MetadataViewModel:
     properties:
       createTime:
+        example: 02/01/2020 11:12:00
         type: string
       id:
+        example: "123884"
         type: string
       lastUpdated:
+        example: 02/01/2020 11:12:00
+        type: string
+    type: object
+  model.PortfolioID:
+    properties:
+      id:
         type: string
     type: object
   model.PortfolioViewModel:
     properties:
-      Metadata:
+      metadata:
         $ref: '#/definitions/model.MetadataViewModel'
         type: object
       stocks:
@@ -40,18 +48,25 @@ definitions:
   model.StockViewModel:
     properties:
       currency:
+        example: CAD
         type: string
       currentPrice:
+        example: 105
         type: number
       name:
+        example: Canadian Pacific Railway Limited
         type: string
       purchaseDate:
+        example: 02/03/2020
         type: string
       purchasePrice:
+        example: 10000
         type: number
       quantity:
+        example: 100
         type: integer
       ticker:
+        example: CP.TO
         type: string
     type: object
 info:
@@ -91,6 +106,23 @@ paths:
           schema:
             type: string
       summary: Get portfolios endpoint
+      tags:
+      - portfolio
+  /portfolio/:portfolioID:
+    post:
+      description: Insert portfolio. Returns the portfolio ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.PortfolioID'
+        "404":
+          description: Not Found
+          schema:
+            type: string
+      summary: Creates portfolio a unique ID
       tags:
       - portfolio
 swagger: "2.0"

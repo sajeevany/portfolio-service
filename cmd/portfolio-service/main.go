@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolio-service/internal/config"
+	"github.com/sajeevany/portfolio-service/internal/datastore/as"
 	"github.com/sajeevany/portfolio-service/internal/endpoints"
 	"github.com/sajeevany/portfolio-service/internal/logging"
 	lm "github.com/sajeevany/portfolio-service/internal/logging/middleware"
@@ -30,7 +32,7 @@ var (
 func main() {
 
 	//Create a universal logger
-	logger := logging.Init()
+	logger := logrus.New()
 
 	//Log build values
 	msg := fmt.Sprintf("Git commit %v", GIT_COMMIT)
@@ -41,6 +43,12 @@ func main() {
 	if err != nil {
 		//Log error and use default values returned
 		logger.Error(err)
+		return
+	}
+
+	//Validate configuration
+	if invalidArgs := conf.GetInvalidArgs(logger); len(invalidArgs) != 0 {
+		logger.WithFields(conf.GetFields()).Fatalf("Config has invalid/missing arguments: <%v>", invalidArgs)
 	}
 	logger.WithFields(conf.GetFields()).Info("Service config loaded")
 
@@ -49,13 +57,16 @@ func main() {
 	logging.Update(logger, conf.Logger)
 
 	//Create Aerospike client
-
+	asClient, err := as.New(conf.AerospikeDS, logger)
+	if err != nil {
+		logger.Fatal("Failed to create Aerospike client ", err)
+	}
 
 	//Initialize router
 	router := setupRouter(logger)
 
 	//Setup routes
-	setupV1Routes(router, logger)
+	setupV1Routes(router, logger, asClient, conf.AerospikeDS.SetMD)
 
 	//Add swagger route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -81,10 +92,10 @@ func setupRouter(logger *logrus.Logger) *gin.Engine {
 	return engine
 }
 
-func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger) {
+func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger, asClient *aerospike.Client, setMetadata config.SetMD) {
 	addV1HealthEndpoints(rtr, logger)
 	addV1UserEndpoints(rtr, logger)
-	addV1PortfolioEndpoints(rtr, logger)
+	addV1PortfolioEndpoints(rtr, logger, asClient, setMetadata)
 }
 
 func addV1HealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
@@ -112,11 +123,15 @@ func addV1UserEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	}
 }
 
-func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger){
+func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger, client *aerospike.Client, setMetadata config.SetMD) {
 	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.PortfolioGroup))
 	{
 		//GET portfolios
-		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger)
+		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger, client, setMetadata)
 		v1.GET(getPortfolios.URL, getPortfolios.Handlers...)
+
+		//Post portfolio
+		postPortfolio := endpoints.BuildPostPortfolioEndpoint(logger, client, setMetadata)
+		v1.POST(postPortfolio.URL, postPortfolio.Handlers...)
 	}
 }

@@ -56,6 +56,32 @@
                     }
                 }
             }
+        },
+        "/portfolio/:portfolioID": {
+            "post": {
+                "description": "Insert portfolio. Returns the portfolio ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "portfolio"
+                ],
+                "summary": "Creates portfolio a unique ID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PortfolioID"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -71,7 +97,7 @@
         "model.AllPortfoliosViewModel": {
             "type": "object",
             "properties": {
-                "Portfolios": {
+                "portfolios": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.PortfolioViewModel"
@@ -91,12 +117,23 @@
             "type": "object",
             "properties": {
                 "createTime": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "02/01/2020 11:12:00"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "123884"
                 },
                 "lastUpdated": {
+                    "type": "string",
+                    "example": "02/01/2020 11:12:00"
+                }
+            }
+        },
+        "model.PortfolioID": {
+            "type": "object",
+            "properties": {
+                "id": {
                     "type": "string"
                 }
             }
@@ -104,7 +141,7 @@
         "model.PortfolioViewModel": {
             "type": "object",
             "properties": {
-                "Metadata": {
+                "metadata": {
                     "type": "object",
                     "$ref": "#/definitions/model.MetadataViewModel"
                 },
@@ -120,25 +157,32 @@
             "type": "object",
             "properties": {
                 "currency": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "CAD"
                 },
                 "currentPrice": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 105
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Canadian Pacific Railway Limited"
                 },
                 "purchaseDate": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "02/03/2020"
                 },
                 "purchasePrice": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 10000
                 },
                 "quantity": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "ticker": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "CP.TO"
                 }
             }
         }

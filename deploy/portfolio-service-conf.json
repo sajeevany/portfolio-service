@@ -1,12 +1,13 @@
 {
-  "versionFile": "/app/version.txt",
   "port": 8080,
-  "portfolioDS": {
-    "type": "aerospike",
+  "aerospikeDS": {
     "host": "localhost",
-    "port": 3000,
+    "port": 100,
     "password": "",
-    "dbName": ""
+    "setMetadata": {
+      "namespace": "portfolio-service",
+      "set": "portfolio"
+    }
   },
   "loggingConf": {
     "level": "Info"

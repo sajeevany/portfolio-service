@@ -1,7 +1,9 @@
 package portfolio
 
 import (
+	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
+	"github.com/sajeevany/portfolio-service/internal/config"
 	"github.com/sirupsen/logrus"
 	"net/http"
 
@@ -15,7 +17,7 @@ import (
 //@Failure 404 {string} model.Error
 //@Router /portfolio [get]
 //@Tags portfolio
-func GetAllPortfolios(logger *logrus.Logger) gin.HandlerFunc {
+func GetAllPortfolios(logger *logrus.Logger, asClient *aerospike.Client, setMetadata config.SetMD) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		//Default response for testing

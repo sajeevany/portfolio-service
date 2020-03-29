@@ -6,10 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func Init() *logrus.Logger {
-	return logrus.New()
-}
-
 func Update(logger *logrus.Logger, config config.LoggingConf) error {
 
 	//Update level
@@ -22,4 +18,12 @@ func Update(logger *logrus.Logger, config config.LoggingConf) error {
 	logger.SetLevel(lvl)
 
 	return nil
+}
+
+//NewDebugLogger - Creates default logger with log level set to debug
+func NewDebugLogger() *logrus.Logger {
+	logger := logrus.New()
+	logger.SetLevel(logrus.DebugLevel)
+
+	return logger
 }

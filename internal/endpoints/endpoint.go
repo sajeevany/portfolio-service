@@ -8,4 +8,3 @@ type Endpoint struct {
 	URL      string
 	Handlers []gin.HandlerFunc
 }
-
