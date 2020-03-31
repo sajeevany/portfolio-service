@@ -55,11 +55,12 @@
                         }
                     }
                 }
-            }
-        },
-        "/portfolio/:portfolioID": {
+            },
             "post": {
                 "description": "Insert portfolio. Returns the portfolio ID.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -67,6 +68,17 @@
                     "portfolio"
                 ],
                 "summary": "Creates portfolio a unique ID",
+                "parameters": [
+                    {
+                        "description": "Add account",
+                        "name": "portfolio",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PortfolioCreateModel"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -127,6 +139,17 @@
                 "lastUpdated": {
                     "type": "string",
                     "example": "02/01/2020 11:12:00"
+                }
+            }
+        },
+        "model.PortfolioCreateModel": {
+            "type": "object",
+            "properties": {
+                "stocks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.StockViewModel"
+                    }
                 }
             }
         },

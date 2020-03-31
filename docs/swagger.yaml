@@ -30,6 +30,13 @@ definitions:
         example: 02/01/2020 11:12:00
         type: string
     type: object
+  model.PortfolioCreateModel:
+    properties:
+      stocks:
+        items:
+          $ref: '#/definitions/model.StockViewModel'
+        type: array
+    type: object
   model.PortfolioID:
     properties:
       id:
@@ -108,9 +115,17 @@ paths:
       summary: Get portfolios endpoint
       tags:
       - portfolio
-  /portfolio/:portfolioID:
     post:
+      consumes:
+      - application/json
       description: Insert portfolio. Returns the portfolio ID.
+      parameters:
+      - description: Add account
+        in: body
+        name: portfolio
+        required: true
+        schema:
+          $ref: '#/definitions/model.PortfolioCreateModel'
       produces:
       - application/json
       responses:
