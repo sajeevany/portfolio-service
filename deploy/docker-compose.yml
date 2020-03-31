@@ -10,14 +10,12 @@ services:
         GIT_COMMIT: $GIT_COMMIT
     depends_on:
       - nosql
-    network_mode: host
     ports:
       - "80:8080"
   nosql:
     ulimits:
       nofile: 90000
     image: "aerospike:4.5.3.6"
-    network_mode: host
     ports:
       - "100:3000"
       - "101:3001"
