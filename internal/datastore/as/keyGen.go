@@ -19,7 +19,11 @@ func GetUniqueID(logger *logrus.Logger, client *aerospike.Client, setMetadata co
 	logger.Debug("Generating unique key")
 
 	//While no ID exists or the given ID does not exists
-	for id == "" || !exists {
+	loopCounter := 0
+	for id == "" || exists {
+
+		//Counter number of times that we've looped. If it exceeds 10, then
+		loopCounter++
 
 		id = uuid.New().String()
 		logger.Debugf("Generating unique key %v", id)
