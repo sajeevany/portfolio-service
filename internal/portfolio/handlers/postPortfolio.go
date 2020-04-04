@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolio-service/internal/config"
 	"github.com/sajeevany/portfolio-service/internal/datastore"
@@ -21,7 +20,7 @@ import (
 //@Failure 404 {string} model.Error
 //@Router /portfolio [post]
 //@Tags portfolio
-func PostPortfolio(logger *logrus.Logger, client *aerospike.Client, setMetadata config.SetMD) gin.HandlerFunc {
+func PostPortfolio(logger *logrus.Logger, client *datastore.ASClient, setMetadata config.SetMD) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		//Bind body to portfolio object
@@ -41,7 +40,7 @@ func PostPortfolio(logger *logrus.Logger, client *aerospike.Client, setMetadata 
 		}
 
 		//Get unused ID
-		id, key, err := datastore.GetUniqueID(logger, client, setMetadata)
+		id, key, err := datastore.GetUniqueID(logger, client.Client, setMetadata)
 		if err != nil {
 			logger.WithFields(setMetadata.GetFields()).Errorf("Unable to get unique id %v", err)
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -51,7 +50,7 @@ func PostPortfolio(logger *logrus.Logger, client *aerospike.Client, setMetadata 
 
 		//Store in aerospike
 		record := storage.NewRecord(portfolio)
-		if insertErr:= client.PutObject(nil, key, record); insertErr != nil{
+		if insertErr:= client.Client.PutObject(client.WritePolicy, key, record); insertErr != nil{
 			msg := fmt.Sprintf("Error <%v> inserting record with key <%v>", insertErr, id)
 			logger.WithFields(record.GetFields()).Errorf(msg)
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": msg})

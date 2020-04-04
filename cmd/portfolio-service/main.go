@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolio-service/internal/config"
 	"github.com/sajeevany/portfolio-service/internal/datastore"
@@ -66,7 +65,7 @@ func main() {
 	router := setupRouter(logger)
 
 	//Setup routes
-	setupV1Routes(router, logger, asClient.Client, conf.AerospikeDS.SetMD)
+	setupV1Routes(router, logger, asClient, conf.AerospikeDS.SetMD)
 
 	//Add swagger route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -92,7 +91,7 @@ func setupRouter(logger *logrus.Logger) *gin.Engine {
 	return engine
 }
 
-func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger, asClient *aerospike.Client, setMetadata config.SetMD) {
+func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger, asClient *datastore.ASClient, setMetadata config.SetMD) {
 	addV1HealthEndpoints(rtr, logger)
 	addV1UserEndpoints(rtr, logger)
 	addV1PortfolioEndpoints(rtr, logger, asClient, setMetadata)
@@ -123,11 +122,11 @@ func addV1UserEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	}
 }
 
-func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger, client *aerospike.Client, setMetadata config.SetMD) {
+func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger, client *datastore.ASClient, setMetadata config.SetMD) {
 	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.PortfolioGroup))
 	{
 		//GET portfolios
-		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger, client, setMetadata)
+		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger, client.Client, setMetadata)
 		v1.GET(getPortfolios.URL, getPortfolios.Handlers...)
 
 		//Post portfolio

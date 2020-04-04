@@ -4,6 +4,7 @@ import (
 	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolio-service/internal/config"
+	"github.com/sajeevany/portfolio-service/internal/datastore"
 	portfolioHandlers "github.com/sajeevany/portfolio-service/internal/portfolio/handlers"
 	"github.com/sirupsen/logrus"
 )
@@ -30,7 +31,7 @@ func BuildGetAllPortfoliosEndpoint(logger *logrus.Logger, asClient *aerospike.Cl
 }
 
 //BuildPostPortfolioEndpoint - Inserts new portfolio with a unique key
-func BuildPostPortfolioEndpoint(logger *logrus.Logger, asClient *aerospike.Client, setMetadata config.SetMD, handlers ...gin.HandlerFunc) Endpoint {
+func BuildPostPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, setMetadata config.SetMD, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      PostPortfolio,
 		Handlers: append(handlers, portfolioHandlers.PostPortfolio(logger, asClient, setMetadata)),
