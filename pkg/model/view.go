@@ -9,8 +9,8 @@ type AllPortfoliosViewModel struct {
 
 //PortfolioViewModel - Detailed view of portfolio and stock purchases
 type PortfolioViewModel struct {
-	Metadata MetadataViewModel `json:"metadata" required:"true" description:"Portfolio metadata"`
-	Stocks   []StockViewModel  `json:"stocks" required:"true" description:"List of all stocks held by portfolio"`
+	Metadata MetadataViewModel      `json:"metadata" required:"true" description:"Portfolio metadata"`
+	Stocks   map[int]StockViewModel `json:"stocks" required:"true" description:"List of all stocks held by portfolio"`
 }
 
 //StockViewModel - Detailed view of stock
