@@ -1,11 +1,12 @@
-package portfolio
+package handlers
 
 import (
 	"fmt"
 	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolio-service/internal/config"
-	"github.com/sajeevany/portfolio-service/internal/datastore/as"
+	"github.com/sajeevany/portfolio-service/internal/datastore"
+	"github.com/sajeevany/portfolio-service/internal/portfolio/storage"
 	"github.com/sajeevany/portfolio-service/pkg/model"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -40,7 +41,7 @@ func PostPortfolio(logger *logrus.Logger, client *aerospike.Client, setMetadata 
 		}
 
 		//Get unused ID
-		id, err := as.GetUniqueID(logger, client, setMetadata)
+		id, key, err := datastore.GetUniqueID(logger, client, setMetadata)
 		if err != nil {
 			logger.WithFields(setMetadata.GetFields()).Errorf("Unable to get unique id %v", err)
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -48,13 +49,16 @@ func PostPortfolio(logger *logrus.Logger, client *aerospike.Client, setMetadata 
 		}
 		logger.Debugf("Generated ID %v", id)
 
-		//Default response for testing
-		//response := model.AllPortfoliosViewModel{
-		//	Portfolios: []model.PortfolioViewModel{{
-		//		Metadata: model.MetadataViewModel{
-		//			ID: "1", CreateTime: "2", LastUpdated: "3"},
-		//		Stocks: []model.StockViewModel{}}},
-		//}
+		//Store in aerospike
+		record := storage.NewRecord(portfolio)
+		if insertErr:= client.PutObject(nil, key, record); insertErr != nil{
+			msg := fmt.Sprintf("Error <%v> inserting record with key <%v>", insertErr, id)
+			logger.WithFields(record.GetFields()).Errorf(msg)
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": msg})
+			return
+		}
+
+		//Insert operation completed. Format response and return
 		response := model.PortfolioID{
 			ID: id,
 		}

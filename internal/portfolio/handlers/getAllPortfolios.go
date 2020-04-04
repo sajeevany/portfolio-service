@@ -1,4 +1,4 @@
-package portfolio
+package handlers
 
 import (
 	"github.com/aerospike/aerospike-client-go"

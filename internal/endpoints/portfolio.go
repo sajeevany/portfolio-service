@@ -4,7 +4,7 @@ import (
 	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolio-service/internal/config"
-	portfolio "github.com/sajeevany/portfolio-service/internal/portfolio/handlers"
+	portfolioHandlers "github.com/sajeevany/portfolio-service/internal/portfolio/handlers"
 	"github.com/sirupsen/logrus"
 )
 
@@ -25,7 +25,7 @@ const (
 func BuildGetAllPortfoliosEndpoint(logger *logrus.Logger, asClient *aerospike.Client, setMetadata config.SetMD, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      GetAllPortfolios_,
-		Handlers: append(handlers, portfolio.GetAllPortfolios(logger, asClient, setMetadata)),
+		Handlers: append(handlers, portfolioHandlers.GetAllPortfolios(logger, asClient, setMetadata)),
 	}
 }
 
@@ -33,6 +33,6 @@ func BuildGetAllPortfoliosEndpoint(logger *logrus.Logger, asClient *aerospike.Cl
 func BuildPostPortfolioEndpoint(logger *logrus.Logger, asClient *aerospike.Client, setMetadata config.SetMD, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      PostPortfolio,
-		Handlers: append(handlers, portfolio.PostPortfolio(logger, asClient, setMetadata)),
+		Handlers: append(handlers, portfolioHandlers.PostPortfolio(logger, asClient, setMetadata)),
 	}
 }

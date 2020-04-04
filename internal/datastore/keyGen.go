@@ -1,4 +1,4 @@
-package as
+package datastore
 
 import (
 	"github.com/aerospike/aerospike-client-go"
@@ -8,13 +8,14 @@ import (
 )
 
 //GetUniqueID - returns a unique key that is not in use as a primary key in the specified namespace and set
-func GetUniqueID(logger *logrus.Logger, client *aerospike.Client, setMetadata config.SetMD) (string, error) {
+func GetUniqueID(logger *logrus.Logger, client *aerospike.Client, setMetadata config.SetMD) (string, *aerospike.Key, error) {
 
 	//TESTING - Won't be unit tested as method is primarily composed to uuid generation and aerospike client code
 
 	var id string
 	var exists = true
 	var err error
+	var key *aerospike.Key
 
 	logger.Debug("Generating unique key")
 
@@ -29,20 +30,20 @@ func GetUniqueID(logger *logrus.Logger, client *aerospike.Client, setMetadata co
 		logger.Debugf("Generating unique key %v", id)
 
 		//Create aerospike key to check
-		key, keyError := aerospike.NewKey(setMetadata.Namespace, setMetadata.SetName, id)
-		if keyError != nil {
+		key, err = aerospike.NewKey(setMetadata.Namespace, setMetadata.SetName, id)
+		if err != nil {
 			logger.Error("Unexpected error when creating new key ")
-			return "", keyError
+			return "", nil,  err
 		}
 
 		//Check if key exists
 		exists, err = client.Exists(aerospike.NewPolicy(), key)
 		if err != nil {
-			logger.Error("Error check if key exists", err)
-			return "", err
+			logger.Error("Error when checking if key exists", err)
+			return "", key, err
 		}
 		logger.Debugf("key: %v exists:%v", key, exists)
 	}
 
-	return id, err
+	return id, key, err
 }

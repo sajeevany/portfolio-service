@@ -13,6 +13,7 @@ type PortfolioViewModel struct {
 	Stocks   []StockViewModel  `json:"stocks" required:"true" description:"List of all stocks held by portfolio"`
 }
 
+//StockViewModel - Detailed view of stock
 type StockViewModel struct {
 	Ticker        string  `json:"ticker" required:"true" description:"Ticker symbol" example:"CP.TO"`
 	Name          string  `json:"name" required:"true" description:"Stock name" example:"Canadian Pacific Railway Limited"`

@@ -5,7 +5,7 @@ import (
 	"github.com/aerospike/aerospike-client-go"
 	"github.com/gin-gonic/gin"
 	"github.com/sajeevany/portfolio-service/internal/config"
-	"github.com/sajeevany/portfolio-service/internal/datastore/as"
+	"github.com/sajeevany/portfolio-service/internal/datastore"
 	"github.com/sajeevany/portfolio-service/internal/endpoints"
 	"github.com/sajeevany/portfolio-service/internal/logging"
 	lm "github.com/sajeevany/portfolio-service/internal/logging/middleware"
@@ -57,7 +57,7 @@ func main() {
 	logging.Update(logger, conf.Logger)
 
 	//Create Aerospike client
-	asClient, err := as.New(conf.AerospikeDS, logger)
+	asClient, err := datastore.New(conf.AerospikeDS, logger)
 	if err != nil {
 		logger.Fatal("Failed to create Aerospike client ", err)
 	}
@@ -66,7 +66,7 @@ func main() {
 	router := setupRouter(logger)
 
 	//Setup routes
-	setupV1Routes(router, logger, asClient, conf.AerospikeDS.SetMD)
+	setupV1Routes(router, logger, asClient.Client, conf.AerospikeDS.SetMD)
 
 	//Add swagger route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
