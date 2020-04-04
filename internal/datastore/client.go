@@ -10,6 +10,7 @@ import (
 type ASClient struct {
 	Client *aerospike.Client
 	WritePolicy *aerospike.WritePolicy
+	SetMetadata config.SetMD
 }
 
 func New(conf config.AerospikePortfolioConfig, logger *logrus.Logger) (*ASClient, error) {
@@ -27,5 +28,6 @@ func New(conf config.AerospikePortfolioConfig, logger *logrus.Logger) (*ASClient
 	return &ASClient{
 		Client:      client,
 		WritePolicy: aerospike.NewWritePolicy(0,0),
+		SetMetadata: conf.SetMD,
 	}, nil
 }

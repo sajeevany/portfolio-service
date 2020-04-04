@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/sajeevany/portfolio-service/internal/config"
 	"github.com/sajeevany/portfolio-service/internal/datastore"
 	"github.com/sajeevany/portfolio-service/internal/portfolio/storage"
 	"github.com/sajeevany/portfolio-service/pkg/model"
@@ -20,7 +19,7 @@ import (
 //@Failure 404 {string} model.Error
 //@Router /portfolio [post]
 //@Tags portfolio
-func PostPortfolio(logger *logrus.Logger, client *datastore.ASClient, setMetadata config.SetMD) gin.HandlerFunc {
+func PostPortfolio(logger *logrus.Logger, client *datastore.ASClient) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		//Bind body to portfolio object
@@ -40,9 +39,9 @@ func PostPortfolio(logger *logrus.Logger, client *datastore.ASClient, setMetadat
 		}
 
 		//Get unused ID
-		id, key, err := datastore.GetUniqueID(logger, client.Client, setMetadata)
+		id, key, err := datastore.GetUniqueID(logger, client.Client, client.SetMetadata)
 		if err != nil {
-			logger.WithFields(setMetadata.GetFields()).Errorf("Unable to get unique id %v", err)
+			logger.WithFields(client.SetMetadata.GetFields()).Errorf("Unable to get unique id %v", err)
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

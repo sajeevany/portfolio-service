@@ -65,7 +65,7 @@ func main() {
 	router := setupRouter(logger)
 
 	//Setup routes
-	setupV1Routes(router, logger, asClient, conf.AerospikeDS.SetMD)
+	setupV1Routes(router, logger, asClient)
 
 	//Add swagger route
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -91,10 +91,10 @@ func setupRouter(logger *logrus.Logger) *gin.Engine {
 	return engine
 }
 
-func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger, asClient *datastore.ASClient, setMetadata config.SetMD) {
+func setupV1Routes(rtr *gin.Engine, logger *logrus.Logger, asClient *datastore.ASClient) {
 	addV1HealthEndpoints(rtr, logger)
 	addV1UserEndpoints(rtr, logger)
-	addV1PortfolioEndpoints(rtr, logger, asClient, setMetadata)
+	addV1PortfolioEndpoints(rtr, logger, asClient)
 }
 
 func addV1HealthEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
@@ -122,15 +122,15 @@ func addV1UserEndpoints(rtr *gin.Engine, logger *logrus.Logger) {
 	}
 }
 
-func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger, client *datastore.ASClient, setMetadata config.SetMD) {
+func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger, client *datastore.ASClient) {
 	v1 := rtr.Group(fmt.Sprintf("%s%s", v1Api, endpoints.PortfolioGroup))
 	{
 		//GET portfolios
-		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger, client.Client, setMetadata)
+		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger, client)
 		v1.GET(getPortfolios.URL, getPortfolios.Handlers...)
 
 		//Post portfolio
-		postPortfolio := endpoints.BuildPostPortfolioEndpoint(logger, client, setMetadata)
+		postPortfolio := endpoints.BuildPostPortfolioEndpoint(logger, client)
 		v1.POST(postPortfolio.URL, postPortfolio.Handlers...)
 	}
 }
