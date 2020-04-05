@@ -2,10 +2,10 @@ from golang:1.13.8-alpine3.11 as builder
 WORKDIR /app
 ARG GIT_COMMIT
 COPY go.mod go.sum ./
+RUN go get github.com/swaggo/swag/cmd/swag
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags "-X main.GIT_COMMIT=$GIT_COMMIT -X main.CONFIG_FILE=/app/config/portfolio-service-conf.json" -o main cmd/portfolio-service/main.go
-RUN go get -u github.com/swaggo/swag/cmd/swag
 RUN swag init cmd/porfolio=service/main.go -g cmd/portfolio-service/main.go  -d ./
 
 from alpine:latest

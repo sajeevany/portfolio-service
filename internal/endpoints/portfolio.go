@@ -9,26 +9,37 @@ import (
 
 const (
 	PortfolioGroup      = "/portfolio"
-	GetAllPortfolios_   = "/"
+	GetAllPortfolios   = "/"
 	PostPortfolio       = "/"
-	GetPortfolio        = "/:portfolioID"
-	DeletePortfolio     = "/:portfolioID"
-	AddStock            = "/:portfolioID/:ticker"
-	ReplaceStockEntry   = "/:portfolioID/:inventoryID"
-	ReplaceStockEntries = "/:portfolioID"
-	DeleteStockEntry    = "/:portfolioID/:inventoryID"
-	DeleteStockEntries  = "/:portfolioID"
+	GetPortfolio        = "/:id"
+	DeletePortfolio     = "/{id}"
+	AddStock            = "/{id}/{tickerID}"
+	ReplaceStockEntry   = "/{id}/{inventoryID}"
+	ReplaceStockEntries = "/{id}"
+	DeleteStockEntry    = "/{id}/{inventoryID}"
+	DeleteStockEntries  = "/{id}"
 )
 
 //BuildGetAllPortfoliosEndpoint - Returns all portfolios
+//swagger:model
 func BuildGetAllPortfoliosEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
-		URL:      GetAllPortfolios_,
+		URL:      GetAllPortfolios,
 		Handlers: append(handlers, portfolioHandlers.GetAllPortfolios(logger, asClient)),
 	}
 }
 
+//BuildGetPortfolioEndpoint - Return portfolio with matching key
+//swagger:model
+func BuildGetPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
+	return Endpoint{
+		URL:      GetPortfolio,
+		Handlers: append(handlers, portfolioHandlers.GetPortfolio(logger, asClient)),
+	}
+}
+
 //BuildPostPortfolioEndpoint - Inserts new portfolio with a unique key
+//swagger:model
 func BuildPostPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      PostPortfolio,

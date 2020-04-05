@@ -129,6 +129,10 @@ func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger, client *dat
 		getPortfolios := endpoints.BuildGetAllPortfoliosEndpoint(logger, client)
 		v1.GET(getPortfolios.URL, getPortfolios.Handlers...)
 
+		//GET portfolio
+		getPortfolio := endpoints.BuildGetPortfolioEndpoint(logger, client)
+		v1.GET(getPortfolio.URL, getPortfolio.Handlers...)
+
 		//Post portfolio
 		postPortfolio := endpoints.BuildPostPortfolioEndpoint(logger, client)
 		v1.POST(postPortfolio.URL, postPortfolio.Handlers...)

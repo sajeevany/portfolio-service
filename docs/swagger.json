@@ -94,6 +94,41 @@
                     }
                 }
             }
+        },
+        "/portfolio/{id}": {
+            "get": {
+                "description": "Non-authenticated endpoint that returns a portfolio with matching key.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "portfolio"
+                ],
+                "summary": "Get portfolios endpoint",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Portfolio ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.PortfolioViewModel"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -169,8 +204,8 @@
                     "$ref": "#/definitions/model.MetadataViewModel"
                 },
                 "stocks": {
-                    "type": "array",
-                    "items": {
+                    "type": "object",
+                    "additionalProperties": {
                         "$ref": "#/definitions/model.StockViewModel"
                     }
                 }

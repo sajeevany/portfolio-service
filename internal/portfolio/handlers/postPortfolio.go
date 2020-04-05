@@ -39,7 +39,7 @@ func PostPortfolio(logger *logrus.Logger, client *datastore.ASClient) gin.Handle
 		}
 
 		//Get unused ID
-		id, key, err := datastore.GetUniqueID(logger, client.Client, client.SetMetadata)
+		id, key, err := datastore.GetUniqueID(logger, client, client.SetMetadata)
 		if err != nil {
 			logger.WithFields(client.SetMetadata.GetFields()).Errorf("Unable to get unique id %v", err)
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
