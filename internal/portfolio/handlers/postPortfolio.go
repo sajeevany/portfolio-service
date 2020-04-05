@@ -48,7 +48,7 @@ func PostPortfolio(logger *logrus.Logger, client *datastore.ASClient) gin.Handle
 		logger.Debugf("Generated ID %v", id)
 
 		//Store in aerospike
-		record := storage.NewRecord(portfolio)
+		record := storage.NewRecord(portfolio, id)
 		if insertErr:= client.Client.PutObject(client.WritePolicy, key, record); insertErr != nil{
 			msg := fmt.Sprintf("Error <%v> inserting record with key <%v>", insertErr, id)
 			logger.WithFields(record.GetFields()).Errorf(msg)

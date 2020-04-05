@@ -35,17 +35,17 @@ func GetAllPortfolios(logger *logrus.Logger, asClient *datastore.ASClient) gin.H
 
 		//Assuming that there's probably only 1 portfolio accessible by this user
 		logger.Debug("Starting record conversion to portfolio view")
-		portfolios :=  make([]model.PortfolioViewModel,1)
+		var portfolios []model.PortfolioViewModel
 
 		for r := range pChnl{
 			logger.Debugf("Writing <%v> to response", r.Inventory)
 			portfolios = append(portfolios, model.PortfolioViewModel{
-				Metadata: model.MetadataViewModel{},
+				Metadata: r.Metadata,
 				Stocks:   r.Inventory,
 			})
 		}
 
-		////Default response for testing
+		//Default response for testing
 		response := model.AllPortfoliosViewModel{
 			Portfolios: portfolios,
 		}
