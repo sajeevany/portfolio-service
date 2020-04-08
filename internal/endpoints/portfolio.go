@@ -12,7 +12,7 @@ const (
 	GetAllPortfolios   = "/"
 	PostPortfolio       = "/"
 	GetPortfolio        = "/:id"
-	DeletePortfolio     = "/{id}"
+	DeletePortfolio     = "/:id"
 	AddStock            = "/{id}/{tickerID}"
 	ReplaceStockEntry   = "/{id}/{inventoryID}"
 	ReplaceStockEntries = "/{id}"
@@ -46,3 +46,13 @@ func BuildPostPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASCli
 		Handlers: append(handlers, portfolioHandlers.PostPortfolio(logger, asClient)),
 	}
 }
+
+//BuildDeletePortfolioEndpoint - Deletes portfolio with specified id
+func BuildDeletePortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
+	return Endpoint{
+		URL:      DeletePortfolio,
+		Handlers: append(handlers, portfolioHandlers.DeletePortfolio(logger, asClient)),
+	}
+}
+
+

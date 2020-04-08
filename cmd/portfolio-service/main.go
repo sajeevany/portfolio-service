@@ -136,5 +136,8 @@ func addV1PortfolioEndpoints(rtr *gin.Engine, logger *logrus.Logger, client *dat
 		//Post portfolio
 		postPortfolio := endpoints.BuildPostPortfolioEndpoint(logger, client)
 		v1.POST(postPortfolio.URL, postPortfolio.Handlers...)
+
+		deletePortfolio := endpoints.BuildDeletePortfolioEndpoint(logger, client)
+		v1.DELETE(deletePortfolio.URL, deletePortfolio.Handlers...)
 	}
 }

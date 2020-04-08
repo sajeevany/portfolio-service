@@ -46,7 +46,7 @@ func KeyExists(logger *logrus.Logger, client *ASClient, id string)(bool, *aerosp
 	//Create aerospike key to check
 	key, err := aerospike.NewKey(client.SetMetadata.Namespace, client.SetMetadata.SetName, id)
 	if err != nil {
-		logger.Error("Unexpected error when creating new key ")
+		logger.Errorf("Unexpected error when creating new key <%v>", key)
 		return true, key,  err
 	}
 
