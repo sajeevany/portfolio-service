@@ -25,7 +25,7 @@ const (
 func BuildGetAllPortfoliosEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      GetAllPortfolios,
-		Handlers: append(handlers, portfolioHandlers.GetAllPortfolios(logger, asClient)),
+		Handlers: append(handlers, portfolioHandlers.GetAllPortfoliosHandler(logger, asClient)),
 	}
 }
 
@@ -34,7 +34,7 @@ func BuildGetAllPortfoliosEndpoint(logger *logrus.Logger, asClient *datastore.AS
 func BuildGetPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      GetPortfolio,
-		Handlers: append(handlers, portfolioHandlers.GetPortfolio(logger, asClient)),
+		Handlers: append(handlers, portfolioHandlers.GetPortfolioHandler(logger, asClient)),
 	}
 }
 
@@ -43,7 +43,7 @@ func BuildGetPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClie
 func BuildPostPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      PostPortfolio,
-		Handlers: append(handlers, portfolioHandlers.PostPortfolio(logger, asClient)),
+		Handlers: append(handlers, portfolioHandlers.PostPortfolioHandler(logger, asClient)),
 	}
 }
 
@@ -51,7 +51,7 @@ func BuildPostPortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASCli
 func BuildDeletePortfolioEndpoint(logger *logrus.Logger, asClient *datastore.ASClient, handlers ...gin.HandlerFunc) Endpoint {
 	return Endpoint{
 		URL:      DeletePortfolio,
-		Handlers: append(handlers, portfolioHandlers.DeletePortfolio(logger, asClient)),
+		Handlers: append(handlers, portfolioHandlers.DeletePortfolioHandler(logger, asClient)),
 	}
 }
 

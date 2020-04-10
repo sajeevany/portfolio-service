@@ -19,7 +19,7 @@ import (
 //@Failure 404 {string} model.Error
 //@Router /portfolio [post]
 //@Tags portfolio
-func PostPortfolio(logger *logrus.Logger, client *datastore.ASClient) gin.HandlerFunc {
+func PostPortfolioHandler(logger *logrus.Logger, client *datastore.ASClient) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		//Bind body to portfolio object

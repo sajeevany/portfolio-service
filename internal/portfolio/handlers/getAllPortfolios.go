@@ -18,37 +18,45 @@ import (
 //@Failure 404 {string} model.Error
 //@Router /portfolio [get]
 //@Tags portfolio
-func GetAllPortfolios(logger *logrus.Logger, asClient *datastore.ASClient) gin.HandlerFunc {
+func GetAllPortfoliosHandler(logger *logrus.Logger, asClient *datastore.ASClient) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
-		logger.WithFields(asClient.SetMetadata.GetFields()).Debugf("Scanning aerospike namespace")
-
-		//Scan all objects and add to portfolio
-		pChnl := make(chan *storage.Record)
-		_, err := asClient.Client.ScanAllObjects(asClient.ScanPolicy, pChnl, asClient.SetMetadata.Namespace, asClient.SetMetadata.SetName)
-		if err != nil{
-			msg := fmt.Sprintf("Error <%v> when scanning namespace <%v>", err, asClient.SetMetadata.Namespace)
-			logger.Error(msg)
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err })
+		if portfolios, err := GetPortfolios(logger, asClient); err != nil{
+			ctx.JSON(http.StatusInternalServerError, model.Error{Message: err.Error()})
 			return
+		}else{
+			//Default response for testing
+			response := model.AllPortfoliosViewModel{
+				Portfolios: portfolios,
+			}
+			ctx.JSON(http.StatusOK, response)
 		}
-
-		//Assuming that there's probably only 1 portfolio accessible by this user
-		logger.Debug("Starting record conversion to portfolio view")
-		var portfolios []model.PortfolioViewModel
-
-		for r := range pChnl{
-			logger.Debugf("Writing <%v> to response", r.Inventory)
-			portfolios = append(portfolios, model.PortfolioViewModel{
-				Metadata: r.Metadata,
-				Stocks:   r.Inventory,
-			})
-		}
-
-		//Default response for testing
-		response := model.AllPortfoliosViewModel{
-			Portfolios: portfolios,
-		}
-		ctx.JSON(http.StatusOK, response)
 	}
+}
+
+func GetPortfolios(logger *logrus.Logger, asClient *datastore.ASClient) ([]model.PortfolioViewModel, error){
+
+	logger.WithFields(asClient.SetMetadata.GetFields()).Debug("Scanning aerospike namespace")
+
+	//Scan all objects and add to portfolio
+	pChnl := make(chan *storage.Record)
+	if _, scanErr := asClient.Client.ScanAllObjects(asClient.ScanPolicy, pChnl, asClient.SetMetadata.Namespace, asClient.SetMetadata.SetName); scanErr != nil{
+		err := fmt.Errorf("aerospike error <%v> when scanning namespace <%v>", scanErr, asClient.SetMetadata.Namespace)
+		logger.Error(err.Error())
+		return nil, err
+	}
+
+	//Assuming that there's probably only 1 portfolio accessible by this user
+	logger.Debug("Starting record conversion to portfolio view")
+	var portfolios []model.PortfolioViewModel
+
+	for r := range pChnl{
+		logger.Debugf("Writing <%v> to response", r.Inventory)
+		portfolios = append(portfolios, model.PortfolioViewModel{
+			Metadata: r.Metadata,
+			Stocks:   r.Inventory,
+		})
+	}
+
+	return portfolios, nil
 }

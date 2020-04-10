@@ -18,7 +18,7 @@ import (
 //@Failure 404 {object} model.Error
 //@Router /portfolio/{id} [get]
 //@Tags portfolio
-func GetPortfolio(logger *logrus.Logger, asClient *datastore.ASClient) gin.HandlerFunc {
+func GetPortfolioHandler(logger *logrus.Logger, asClient *datastore.ASClient) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		//Validate that id parameter has been set
@@ -30,34 +30,56 @@ func GetPortfolio(logger *logrus.Logger, asClient *datastore.ASClient) gin.Handl
 			return
 		}
 
-		//Check if key exists
-		keyExists, key, err := datastore.KeyExists(logger, asClient, portfolioID)
-		if err != nil{
-			msg := fmt.Sprintf("Error <%v>. Unexpected internal error when checking if id <%v> exists", err, portfolioID)
-			logger.Debug(msg)
-			ctx.JSON(http.StatusInternalServerError, model.Error{Message: msg})
+		//Get portfolio
+		recordExists, portfolio, err := GetPortfolio(logger, asClient, portfolioID)
+		if err != nil {
+			logger.Errorf("unexpected error when fetching portfolio record for ID <%v>", portfolioID)
+			ctx.JSON(http.StatusInternalServerError, model.Error{Message:err.Error()})
 			return
 		}
 
-		if keyExists {
-			//key exists so query aerospike and return record
-			var r storage.Record
-			if readErr := asClient.Client.GetObject(nil, key, &r); readErr != nil{
-				msg := fmt.Sprintf("Error <%v>. Unable to read object for key <%v>", readErr, portfolioID)
-				logger.Debug(msg)
-				ctx.JSON(http.StatusBadRequest, model.Error{Message: msg})
-				return
-			}
-
-			response := model.PortfolioViewModel{
-				Metadata: r.Metadata,
-				Stocks:   r.Inventory,
-			}
-			ctx.JSON(http.StatusOK, response)
-			return
+		//Shape response based on record existence
+		if recordExists{
+			logger.Debugf("Record exists for key <%v>. portfolio: <%v>", portfolioID, portfolio)
+			ctx.JSON(http.StatusOK, portfolio)
 		}else{
 			ctx.Status(http.StatusNotFound)
 			return
 		}
 	}
+}
+
+//GetPortfolio - Fetches portfolio with matching key. Returns key existence check, portfolio and error. Returns false whenever an error occurs and when a record is detected not to be found.
+func GetPortfolio(logger *logrus.Logger, asClient *datastore.ASClient, portfolioID string) (bool, model.PortfolioViewModel, error){
+
+	logger.Debugf("Starting portfolio lookup for <%v>", portfolioID)
+
+	//Check if key exists
+	keyExists, key, keyErr := datastore.KeyExists(logger, asClient, portfolioID)
+	if keyErr != nil{
+		err := fmt.Errorf("unexpected internal error when checking if id <%v> exists. error <%v> ", portfolioID, keyErr)
+		logger.Debug(err)
+		return false, model.PortfolioViewModel{}, err
+	}
+	logger.Debugf("Key built for id <%v>. Key existence check = <%v>", portfolioID, keyExists)
+
+	//If the key exists then attempt to fetch the record
+	if keyExists {
+		var r storage.Record
+		if readErr := asClient.Client.GetObject(nil, key, &r); readErr != nil{
+			err := fmt.Errorf("unable to read object for key <%v>. Error <%v>", portfolioID, readErr)
+			logger.Debug(err)
+			return true, model.PortfolioViewModel{}, err
+		}
+
+		response := model.PortfolioViewModel{
+			Metadata: r.Metadata,
+			Stocks:   r.Inventory,
+		}
+
+		return true, response, nil
+	}
+
+	//No record matching input key. Return false for record existance check
+	return false, model.PortfolioViewModel{}, nil
 }
