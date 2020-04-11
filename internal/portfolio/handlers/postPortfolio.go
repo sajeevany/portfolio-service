@@ -19,7 +19,7 @@ import (
 //@Failure 404 {string} model.Error
 //@Router /portfolio [post]
 //@Tags portfolio
-func PostPortfolioHandler(logger *logrus.Logger, client *datastore.ASClient) gin.HandlerFunc {
+func PostPortfolioHandler(logger *logrus.Logger, asClient *datastore.ASClient) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		//Bind body to portfolio object
@@ -38,28 +38,42 @@ func PostPortfolioHandler(logger *logrus.Logger, client *datastore.ASClient) gin
 			return
 		}
 
-		//Get unused ID
-		id, key, err := datastore.GetUniqueID(logger, client, client.SetMetadata)
-		if err != nil {
-			logger.WithFields(client.SetMetadata.GetFields()).Errorf("Unable to get unique id %v", err)
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		//Insert portfolio
+		if id, insertErr := insertPortfolio(logger, asClient, portfolio); insertErr != nil{
+			err := fmt.Errorf("error storing portfolio in aerospike <%v>", insertErr)
+			logger.WithFields(portfolio.GetFields()).Error(err.Error())
+			ctx.JSON(http.StatusInternalServerError, model.Error{Message: err.Error()})
+			return
+		}else {
+			ctx.JSON(http.StatusOK, model.PortfolioID{ID:id})
 			return
 		}
-		logger.Debugf("Generated ID %v", id)
-
-		//Store in aerospike
-		record := storage.NewRecord(portfolio, id)
-		if insertErr:= client.Client.PutObject(client.WritePolicy, key, record); insertErr != nil{
-			msg := fmt.Sprintf("Error <%v> inserting record with key <%v>", insertErr, id)
-			logger.WithFields(record.GetFields()).Errorf(msg)
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": msg})
-			return
-		}
-
-		//Insert operation completed. Format response and return
-		response := model.PortfolioID{
-			ID: id,
-		}
-		ctx.JSON(http.StatusOK, response)
 	}
 }
+
+//insertRecord - Generates record for input portfolio and writes to aerospike with an unused key. Returns the generated ID. ID is empty if error occurs.
+func insertPortfolio(logger *logrus.Logger, client *datastore.ASClient, portfolio model.PortfolioCreateModel)(string, error){
+
+	logger.WithFields(portfolio.GetFields()).Debug("Starting record insertion for portfolio")
+
+	//Get unused ID
+	id, key, idErr := datastore.GetUniqueID(logger, client, client.SetMetadata)
+	if idErr != nil {
+		err := fmt.Errorf("unable to get unique id. Error <%v>", idErr)
+		logger.WithFields(client.SetMetadata.GetFields()).Error(err.Error())
+		return "", err
+	}
+	logger.Debugf("Generated ID %v", id)
+
+	//Store in aerospike
+	record := storage.NewRecord(portfolio, id)
+	logger.WithFields(record.GetFields()).Debug("Created record. Starting put object operation into aerospike")
+	if insertErr:= client.Client.PutObject(client.WritePolicy, key, record); insertErr != nil{
+		err := fmt.Errorf("aerospike error putting portfolio object with key <%v>. Error <%v>", id, insertErr)
+		logger.WithFields(record.GetFields()).Error(err)
+		return "", err
+	}
+
+	return id, nil
+}
+

@@ -6,7 +6,7 @@ services:
       context: ./..
       dockerfile: build/Dockerfile
       args:
-        CONFIG_FILE: "deploy/portfolio-service-conf.json"
+        CONFIG_FILE: "deploy/portfolio-service-conf_compose.json"
         GIT_COMMIT: $GIT_COMMIT
     depends_on:
       - nosql
@@ -17,6 +17,13 @@ services:
       nofile: 90000
     image: "aerospike:4.5.3.6"
     ports:
-      - "100:3000"
-      - "101:3001"
-      - "102:3002"
+      - "3000:3000"
+      - "3001:3001"
+      - "3002:3002"
+      - "3003:3003"
+    configs:
+      - source: aerospike
+        target: /etc/aerospike/aerospike.conf
+configs:
+  aerospike:
+    file: ./aerospile.conf
