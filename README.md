@@ -10,13 +10,18 @@ Access swagger API:
     ${HOST}:{PORT}/swagger/index.html
     ie. http://localhost:80/swagger/index.html
 
-Run tests:
+Run unit tests:
 
-    go test ./...
+    go test -short ./...
+    
+Run integration tests:
+
+    cd integration-test
+    docker-compose up --build --abort-on-container-exit
     
 Run containers (debug):
 
     docker run -d -p 79:8080 portfolio-service:latest
-    docker run -d -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 -v $(pwd)/deploy/aerospike.conf:/opt/aerospike/etc/aerospike.conf --foreground --config-file /opt/aerospike/etc/aerospike.conf aerospike:4.5.3.6 
+    docker run -d -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 -v $(pwd)/deploy/aerospike.conf:/opt/aerospike/etc/aerospike.conf --foreground --config-file /opt/aerospike/etc/aerospike.conf aerospike:4.5.3.6
 
 
