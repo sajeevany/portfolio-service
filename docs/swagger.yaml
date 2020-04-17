@@ -99,6 +99,31 @@ paths:
       tags:
       - health
   /portfolio:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a portfolio with the specified ID. Returns 200 if the resource
+        did not already exist.
+      parameters:
+      - description: Portfolio ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Error'
+      summary: Deletes a portfolio at the specified ID
+      tags:
+      - portfolio
     get:
       description: Non-authenticated endpoint that returns array of all stored portfolios.
       produces:

@@ -15,8 +15,8 @@ import (
 //@Accept json
 //@Param id path string true "Portfolio ID"
 //@Produce json
-//@Success 200
-//@Failure 404 {string} model.Error
+//@Success 200 {string} string "ok"
+//@Failure 404 {object} model.Error
 //@Router /portfolio [delete]
 //@Tags portfolio
 func DeletePortfolioHandler(logger *logrus.Logger, asClient *datastore.ASClient) gin.HandlerFunc {

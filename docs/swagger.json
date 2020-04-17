@@ -93,6 +93,42 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Deletes a portfolio with the specified ID. Returns 200 if the resource did not already exist.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "portfolio"
+                ],
+                "summary": "Deletes a portfolio at the specified ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Portfolio ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Error"
+                        }
+                    }
+                }
             }
         },
         "/portfolio/{id}": {
